@@ -1,5 +1,6 @@
 package com.korit.library.web.api;
 
+import com.korit.library.aop.annotation.ValidAspect;
 import com.korit.library.web.dto.CMRespDto;
 import com.korit.library.web.dto.UserDto;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,11 @@
 package com.korit.library.aop;
 
+import com.korit.library.aop.annotation.ValidAspect;
 import com.korit.library.exception.CustomValidationException;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
 
@@ -11,7 +16,7 @@ import java.util.Map;
 @Component
 public class ValidationAop {
 
-    @Pointcut("com.korit.library.aop.annotation.validAspect")
+    @Pointcut("@annotation(com.korit.library.aop.annotation.ValidAspect)")
     private void pointCut() {}
 
     @Around("pointCut()")
@@ -27,10 +32,11 @@ public class ValidationAop {
             }
         }
 
-        if(bindingResult.hasErrors())) {
+        if(bindingResult.hasErrors()) {
             Map<String, String> errorMap = new HashMap<>();
-            bindingResult.getFieldError().forEach(error -> {
-               errorMap.put(error.getField(), error.getDefaultMessage());
+
+            bindingResult.getFieldErrors().forEach(error -> {
+                errorMap.put(error.getField(), error.getDefaultMessage());
             });
 
             throw new CustomValidationException(errorMap);
