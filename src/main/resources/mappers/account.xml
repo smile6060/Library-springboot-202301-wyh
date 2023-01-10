@@ -2,7 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.korit.library.repository.AccountRepository">
+
     <resultMap id="userMst" type="com.korit.library.web.dto.UserDto">
         <!--       property = UserDto안에 있는 변수명들을 넣어줌-->
         <!--       column = select에 선언하는 이름명들을 넣어줌-->
@@ -21,7 +23,6 @@
         <result property="roleName" column="role_name"></result>
         <result property="createDate" column="create_date"></result>
         <result property="updateDate" column="update_date"></result>
-
     </resultMap>
 
     <resultMap id="roleDtl" type="com.korit.library.web.dto.RoleDtlDto">
@@ -32,7 +33,6 @@
         <result property="updateDate" column="update_date"></result>
         <collection property="roleMstDto" resultMap="roleMst"></collection>
     </resultMap>
-
 
     <select id="findUserByUsername" parameterType="String" resultMap="userMst">
         select
@@ -47,40 +47,35 @@
 
             um.create_date,
             um.update_date
-
         from
             user_mst um
             left outer join role_dtl rd on(rd.user_id = um.user_id)
             left outer join role_mst rm on(rm.role_id = rd.role_id)
         where
-            um.username = #{username}
+             um.username = #{username}
     </select>
-
     <select id="findUserByUserId" parameterType="Integer" resultMap="userMst">
         select
-        um.user_id,
-        um.username,
-        um.password,
-        um.name,
-        um.email,
+            um.user_id,
+            um.username,
+            um.password,
+            um.name,
+            um.email,
 
-        rd.role_id,
-        rm.role_name,
+            rd.role_id,
+            rm.role_name,
 
-        um.create_date,
-        um.update_date
-
+            um.create_date,
+            um.update_date
         from
-        user_mst um
-        left outer join role_dtl rd on(rd.user_id = um.user_id)
-        left outer join role_mst rm on(rm.role_id = rd.role_id)
-
+            user_mst um
+            left outer join role_dtl rd on(rd.user_id = um.user_id)
+            left outer join role_mst rm on(rm.role_id = rd.role_id)
         where
-        um.user_id = #{userId}
+             um.user_id = #{userId}
     </select>
 
-
-    <insert id="save" parameterType="com.korit.library.web.dto.UserDto"
+    <insert id="saveUser" parameterType="com.korit.library.web.dto.UserDto"
             useGeneratedKeys="true"
             keyProperty="userId">
         insert into user_mst
@@ -90,5 +85,6 @@
     <insert id="saveRole" parameterType="com.korit.library.web.dto.UserDto">
         insert into role_dtl
         values (0, #{userId}, 1, now(), now())
+
     </insert>
 </mapper>
