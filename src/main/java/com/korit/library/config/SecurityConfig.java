@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/account/login") //로그인 페이지  get 요청
                 .loginProcessingUrl("/account/login") //로그인 인증 post 요청임
+                .failureForwardUrl("/account/login/error")
                 .defaultSuccessUrl("/index");
 
     }

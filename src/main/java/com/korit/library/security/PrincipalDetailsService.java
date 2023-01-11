@@ -21,6 +21,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+//        해당  username이 DB(user_mst table)에 존재하는지 먼저 확인해야함.
         UserDto user = accountRepository.findUserByUsername(username);
 
         if(user == null) {
