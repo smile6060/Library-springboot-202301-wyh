@@ -12,6 +12,15 @@ spring:
     username: root
     password: 1q2w3e4r
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
 mybatis:
   mapper-locations:
     - /mappers/*.xml
+
+file:
+  path: C:/web-3-202210/library/upload
