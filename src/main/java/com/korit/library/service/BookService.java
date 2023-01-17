@@ -79,9 +79,9 @@ public class BookService {
             String extension = originFileName.substring(originFileName.lastIndexOf("."));
             String tempFileName = UUID.randomUUID().toString().replaceAll("-", "") + extension;
 
-            Path uploadPath = Paths.get(filePath + "/book/" + tempFileName);
+            Path uploadPath = Paths.get(filePath + "book/" + tempFileName);
 
-            File f = new File(filePath + "/book/");
+            File f = new File(filePath + "book");
 //            경로가 없으면 true
             if(!f.exists()) {
 //          mkdirs 파일 입출력 때 쓰는 거 경로가 없으면 모든 경로를 생성해라.
@@ -106,4 +106,29 @@ public class BookService {
         bookRepository.registerBookImages(bookImageDtos);
 
     }
+
+    public List<BookImageDto> getBooks(String bookCode) {
+        return bookRepository.findBookImageAll(bookCode);
+    }
+
+    public void removeBookImage(int imageId) {
+        BookImageDto bookImageDto = bookRepository.findBookImageByImageId(imageId);
+
+        if(bookImageDto == null) {
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("error", "존재하지 않는 이미지 ID입니다.");
+
+            throw new CustomValidationException(errorMap);
+        }
+
+        if(bookRepository.deleteBookImages(imageId) > 0) {
+            File file = new File(filePath + "book/" + bookImageDto.getSaveName());
+            if(file.exists()) {
+                file.delete();
+            }
+
+
+        }
+    }
+
 }

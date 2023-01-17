@@ -91,4 +91,24 @@ public class BookApi {
 
     }
 
+    @ParamsAspect
+    @GetMapping("/book/{bookCode}/images")
+    public ResponseEntity<CMRespDto<List<BookImageDto>>> getImages(@PathVariable String bookCode) {
+        List<BookImageDto> bookImagesDto = bookService.getBooks(bookCode);
+        return ResponseEntity
+                .ok()
+                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", bookImagesDto));
+    }
+
+    @DeleteMapping("/book/{bookCode}/image/{imageId}")
+    public ResponseEntity<CMRespDto<?>> removeBookImg(
+            @PathVariable String bookCode,
+            @PathVariable int imageId) {
+
+        bookService.removeBookImage(imageId);
+
+        return ResponseEntity
+                .ok()
+                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", null));
+    }
 }
