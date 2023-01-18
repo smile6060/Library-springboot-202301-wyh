@@ -2,7 +2,7 @@ package com.korit.library.service;
 
 import com.korit.library.exception.CustomValidationException;
 import com.korit.library.repository.AccountRepository;
-import com.korit.library.web.dto.UserDto;
+import com.korit.library.entity.UserMst;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,16 +18,16 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public UserDto registerUser(UserDto userDto) {
+    public UserMst registerUser(UserMst userMst) {
 //        new BCryptPasswordEncoder() 암호화 , encode(userDto.getPassword()) 입력한 패스워드
-        userDto.setPassword(new BCryptPasswordEncoder().encode(userDto.getPassword()));
-        accountRepository.saveUser(userDto);
-        accountRepository.saveRole(userDto);
-        return userDto;
+        userMst.setPassword(new BCryptPasswordEncoder().encode(userMst.getPassword()));
+        accountRepository.saveUser(userMst);
+        accountRepository.saveRole(userMst);
+        return userMst;
     }
 
     public void duplicateUsername(String username) {
-        UserDto user = accountRepository.findUserByUsername(username);
+        UserMst user = accountRepository.findUserByUsername(username);
 //        log.info("{}", user);
 //        log.info("ROLE_DTL{}", user.getRoleDtlDto());
 //        log.info("ROLE_MST{}", user.getRoleDtlDto().get(0));
@@ -51,7 +51,7 @@ public class AccountService {
 
     }
 
-    public UserDto getUser(int userId) {
+    public UserMst getUser(int userId) {
         return accountRepository.findUserByUserId(userId);
     }
 }

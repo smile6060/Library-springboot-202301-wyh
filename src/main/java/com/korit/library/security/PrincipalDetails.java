@@ -1,8 +1,6 @@
 package com.korit.library.security;
 
-import com.korit.library.web.dto.RoleDtlDto;
-import com.korit.library.web.dto.RoleMstDto;
-import com.korit.library.web.dto.UserDto;
+import com.korit.library.entity.UserMst;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -19,7 +16,7 @@ import java.util.Map;
 public class PrincipalDetails implements UserDetails {
 
     @Getter
-    private final UserDto user;
+    private final UserMst user;
     private Map<String, Object> response;
 
     // 권한을 리스트로 관리하는 부분
@@ -48,8 +45,8 @@ public class PrincipalDetails implements UserDetails {
 //        }
 //        위에 내용들을 밑에 람다로 간추려짐.
 
-        user.getRoleDtlDto().forEach(dtl -> {
-            authorities.add(() -> dtl.getRoleMstDto().getRoleName());
+        user.getRoleDtl().forEach(dtl -> {
+            authorities.add(() -> dtl.getRoleMst().getRoleName());
         });
 //        authorities 안에 role user role admin  권한들이 들어감.
         return authorities;
