@@ -35,4 +35,6 @@ public class BookMst {
     @ApiModelProperty(value = "분야", example = "테스트")
     private String category;
 
+    private BookLike bookLike;
+
 }

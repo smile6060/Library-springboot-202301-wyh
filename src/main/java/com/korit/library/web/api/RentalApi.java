@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"도서 대여 API"})
 @RestController
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RentalApi {
 
-//    어노테이션 RequiredArgsConstructor달고 final 달면 Autowired임
+    //    어노테이션 RequiredArgsConstructor달고 final 달면 Autowired임
 //    Autowired는 생성 할때마다 달아줘야함
 //    RequiredArgsConstructor는 final만 달면 됨 개취차이임
     private final RentalService rentalService;
@@ -33,9 +30,18 @@ public class RentalApi {
     @PostMapping("/rental/{bookId}")
     public ResponseEntity<CMRespDto<?>> rental(@PathVariable int bookId,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
-//        rentalService.rentalOne(principalDetails.getUser().getUserId(),bookId);
+        rentalService.rentalOne(principalDetails.getUser().getUserId(), bookId);
         return ResponseEntity
                 .ok()
                 .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", null));
     }
+
+    @PutMapping("/rental/{bookId}")
+    public ResponseEntity<CMRespDto<?>> rentalReturn(@PathVariable int bookId){
+        rentalService.returnBook(bookId);
+        return ResponseEntity
+                .ok()
+                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", null));
+    }
+
 }

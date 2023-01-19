@@ -19,28 +19,52 @@ public class RentalService {
     private RentalRepository rentalRepository;
 
     public void rentalOne(int userId, int bookId) {
-       availability(userId);
+        availability(userId);
+        availabilityLoan(bookId);
 
-       RentalMst rentalMst = RentalMst.builder()
-               .userId(userId)
-               .build();
+        RentalMst rentalMst = RentalMst.builder()
+                .userId(userId)
+                .build();
 
         rentalRepository.saveRentalMst(rentalMst);
 
         List<RentalDtl> rentalDtlList = new ArrayList<>();
-        rentalDtlList.add( RentalDtl.builder()
-               .rentalId(rentalMst.getRentalId())
-               .bookId(bookId)
-               .build());
+        rentalDtlList.add(RentalDtl.builder()
+                .rentalId(rentalMst.getRentalId())
+                .bookId(bookId)
+                .build());
 
-       rentalRepository.saveRentalDtl(rentalDtlList);
+        rentalRepository.saveRentalDtl(rentalDtlList);
+    }
+
+    public void returnBook(int bookId) {
+        notAvailabilityLoan(bookId);
+        rentalRepository.updateReturnDate(bookId);
     }
 
     private void availability(int userId) {
         int rentalCount = rentalRepository.rentalAvailability(userId);
-        if(rentalCount > 2) {
+        if (rentalCount > 2) {
             Map<String, String> errorMap = new HashMap<>();
             errorMap.put("rentalCountError", "대여 횟수를 초과하였습니다.");
+            throw new CustomRentalException(errorMap);
+        }
+    }
+
+    private void availabilityLoan(int bookId) {
+        int loanCount = rentalRepository.loanRental(bookId);
+        if (loanCount > 0) {
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("loanError", "현재 대여중인 도서입니다.");
+            throw new CustomRentalException(errorMap);
+        }
+    }
+
+    private void notAvailabilityLoan(int bookId) {
+        int loanCount = rentalRepository.loanRental(bookId);
+        if (loanCount > 1) {
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("loanError", "대여중인 도서가 아닙니다.");
             throw new CustomRentalException(errorMap);
         }
     }
