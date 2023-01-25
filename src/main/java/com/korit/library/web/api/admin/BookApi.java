@@ -21,6 +21,7 @@ import java.util.List;
 @Api(tags = {"관리자 도서관리 API"})
 @RequestMapping("/api/admin")
 @RestController
+//@CrossOrigin(origins = "http://127.0.0.1:5500/")
 public class BookApi {
 
     @Autowired
@@ -35,7 +36,7 @@ public class BookApi {
                 .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", bookService.searchBook(searchReqDto)));
     }
 
-    @GetMapping("/Categories")
+    @GetMapping("/categories")
     public ResponseEntity<CMRespDto<List<CategoryView>>> getCategories() {
         return ResponseEntity
                 .ok()
