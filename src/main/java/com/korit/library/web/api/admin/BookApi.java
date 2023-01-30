@@ -5,8 +5,8 @@ import com.korit.library.aop.annotation.ValidAspect;
 import com.korit.library.entity.BookImage;
 import com.korit.library.entity.BookMst;
 import com.korit.library.entity.CategoryView;
-import com.korit.library.service.BookService;
 import com.korit.library.web.dto.*;
+import com.korit.library.service.BookService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.List;
 @Api(tags = {"관리자 도서관리 API"})
 @RequestMapping("/api/admin")
 @RestController
-//@CrossOrigin(origins = "http://127.0.0.1:5500/")
+//@CrossOrigin(origins = "http://172.30.64.1:5500")
 public class BookApi {
 
     @Autowired
@@ -63,17 +63,19 @@ public class BookApi {
     @ParamsAspect
     @ValidAspect
     @PutMapping("/book/{bookCode}")
-    public ResponseEntity<CMRespDto<?>> modifyBook(@Valid @RequestBody BookReqDto bookReqDto, BindingResult bindingResult) {
+    public ResponseEntity<CMRespDto<?>> modifyBook(@PathVariable String bookCode, @Valid @RequestBody BookReqDto bookReqDto, BindingResult bindingResult) {
         bookService.modifyBook(bookReqDto);
         return ResponseEntity
                 .ok()
                 .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", true));
     }
+
     @ParamsAspect
     @ValidAspect
     @PatchMapping("/book/{bookCode}")
-    public ResponseEntity<CMRespDto<?>> maintainModifyBook(@Valid @RequestBody BookReqDto bookReqDto, BindingResult bindingResult) {
+    public ResponseEntity<CMRespDto<?>> maintainModifyBook(@PathVariable String bookCode, @Valid @RequestBody BookReqDto bookReqDto, BindingResult bindingResult) {
         bookService.maintainModifyBook(bookReqDto);
+
         return ResponseEntity
                 .ok()
                 .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", true));
@@ -89,25 +91,28 @@ public class BookApi {
     }
 
     @ParamsAspect
-    @PostMapping("/book/{bookCode}/images")
-    public ResponseEntity<CMRespDto<?>> registerBookImg(@PathVariable String bookCode, @RequestPart List<MultipartFile> files) {
-        bookService.registerBookImages(bookCode, files);
-//        MultipartFile file = files.get(0);
-//        OriginalFilename 파일의 실제 이름
-
+    @DeleteMapping("/books")
+    public ResponseEntity<CMRespDto<?>> removeBooks(@RequestBody DeleteBooksReqDto deleteBooksReqDto) {
+        bookService.removeBooks(deleteBooksReqDto);
         return ResponseEntity
                 .ok()
                 .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", true));
+    }
 
+    @ParamsAspect
+    @PostMapping("/book/{bookCode}/images")
+    public ResponseEntity<CMRespDto<?>> registerBookImg(@PathVariable String bookCode, @RequestPart List<MultipartFile> files) {
+        bookService.registerBookImages(bookCode, files);
+        return ResponseEntity.ok()
+                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", true));
     }
 
     @ParamsAspect
     @GetMapping("/book/{bookCode}/images")
     public ResponseEntity<CMRespDto<List<BookImage>>> getImages(@PathVariable String bookCode) {
-        List<BookImage> bookImagesDto = bookService.getBooks(bookCode);
-        return ResponseEntity
-                .ok()
-                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", bookImagesDto));
+        List<BookImage> bookImages = bookService.getBooks(bookCode);
+        return ResponseEntity.ok()
+                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", bookImages));
     }
 
     @DeleteMapping("/book/{bookCode}/image/{imageId}")
@@ -119,6 +124,7 @@ public class BookApi {
 
         return ResponseEntity
                 .ok()
-                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully", null));
+                .body(new CMRespDto<>(HttpStatus.OK.value(), "Successfully" ,null));
     }
+
 }

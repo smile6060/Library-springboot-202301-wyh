@@ -21,8 +21,6 @@ import java.util.*;
 @Service
 public class BookService {
 
-//    yml 경로를 여기로 들고 와라는 코드임
-//    표현식
     @Value("${file.path}")
     private String filePath;
 
@@ -32,6 +30,7 @@ public class BookService {
     public int getBookTotalCount(SearchNumberListReqDto searchNumberListReqDto) {
         return bookRepository.getBookTotalCount(searchNumberListReqDto);
     }
+
 
     public List<BookMst> searchBook(SearchReqDto searchReqDto) {
         searchReqDto.setIndex();
@@ -43,29 +42,34 @@ public class BookService {
     }
 
     public void registerBook(BookReqDto bookReqDto) {
-        duplicateBookCode((bookReqDto.getBookCode()));
+        duplicateBookCode(bookReqDto.getBookCode());
         bookRepository.saveBook(bookReqDto);
     }
 
     private void duplicateBookCode(String bookCode) {
-       BookMst bookMst = bookRepository.findBookByBookCode(bookCode);
-       if(bookMst != null) {
-           Map<String, String> errorMap = new HashMap<>();
-           errorMap.put("bookCode", "이미 존재하는 도서 코드입니다.");
+        BookMst bookMst = bookRepository.findBookByBookCode(bookCode);
+        if(bookMst != null) {
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("bookCode", "이미 존재하는 도서코드입니다.");
 
-           throw new CustomValidationException(errorMap);
-       }
+            throw new CustomValidationException(errorMap);
+        }
     }
 
     public void modifyBook(BookReqDto bookReqDto) {
         bookRepository.updateBookByBookCode(bookReqDto);
     }
+
     public void maintainModifyBook(BookReqDto bookReqDto) {
         bookRepository.maintainUpdateBookByBookCode(bookReqDto);
     }
 
     public void removeBook(String bookCode) {
         bookRepository.deleteBook(bookCode);
+    }
+
+    public void removeBooks(DeleteBooksReqDto deleteBooksReqDto) {
+        bookRepository.deleteBooks(deleteBooksReqDto.getUserIds());
     }
 
     public void registerBookImages(String bookCode, List<MultipartFile> files) {
@@ -86,9 +90,7 @@ public class BookService {
             Path uploadPath = Paths.get(filePath + "book/" + tempFileName);
 
             File f = new File(filePath + "book");
-//            경로가 없으면 true
             if(!f.exists()) {
-//          mkdirs 파일 입출력 때 쓰는 거 경로가 없으면 모든 경로를 생성해라.
                 f.mkdirs();
             }
 
@@ -108,7 +110,6 @@ public class BookService {
         });
 
         bookRepository.registerBookImages(bookImages);
-
     }
 
     public List<BookImage> getBooks(String bookCode) {
@@ -125,14 +126,12 @@ public class BookService {
             throw new CustomValidationException(errorMap);
         }
 
-        if(bookRepository.deleteBookImages(imageId) > 0) {
+        if(bookRepository.deleteBookImage(imageId) > 0) {
             File file = new File(filePath + "book/" + bookImage.getSaveName());
             if(file.exists()) {
                 file.delete();
             }
-
-
         }
     }
-
 }
+
