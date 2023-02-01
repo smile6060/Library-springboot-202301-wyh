@@ -198,6 +198,8 @@ class ComponentEvent {
                 return;
             }
 
+            BookModificationService.getInstance().clearErrors();
+
             if(confirm("도서 이미지를 등록하시겠습니까?")) {
                 const imgAddButton = document.querySelector(".img-add-button");
                 const imgCancelButton = document.querySelector(".img-cancel-button");
