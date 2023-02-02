@@ -46,7 +46,7 @@
                                     max(rental_dtl_id) as rental_dtl_id,
                                     book_id
                                 from
-                                    rental_dtl
+                                     rental_dtl
                                 group by
                                     book_id) rd1
                                 left outer join rental_dtl rd2 on(rd2.rental_dtl_id = rd1.rental_dtl_id)) rd
@@ -55,10 +55,10 @@
             1 = 1
         <if test='searchValue != null and searchValue != ""'>
             and (
-                    bm.book_name like CONCAT('%', #{searchValue}, '%')
-                or	bm.author like CONCAT('%', #{searchValue}, '%')
-                or	bm.publisher like CONCAT('%', #{searchValue}, '%')
-                )
+                bm.book_name like CONCAT('%', #{searchValue}, '%')
+            or	bm.author like CONCAT('%', #{searchValue}, '%')
+            or	bm.publisher like CONCAT('%', #{searchValue}, '%')
+            )
         </if>
         <if test='category != null and category != ""'>
             and	bm.category = #{category}
@@ -71,7 +71,7 @@
             <when test='order == "dateAsc"'>bm.publication_date,</when>
             <when test='order == "dateDesc"'>bm.publication_date desc,</when>
         </choose>
-        bm.book_id
+            bm.book_id
         <if test='limit == "Y"'>
             limit #{index}, #{count}
         </if>
@@ -146,7 +146,7 @@
             book_id in
             <foreach collection="list" item="bookId" open="(" close=")" separator=",">
                 #{bookId}
-        </foreach>
+            </foreach>
     </delete>
 
     <insert id="registerBookImages" parameterType="list">
@@ -192,7 +192,7 @@
         from
             book_image
         where
-            image_id = #{bookCode}
+            book_code = #{bookCode}
 
     </select>
 
@@ -201,6 +201,6 @@
         from
             book_image
         where
-            book_code = #{imageId};
+            image_id = #{imageId};
     </delete>
 </mapper>

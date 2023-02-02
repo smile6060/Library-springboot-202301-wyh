@@ -48,5 +48,3 @@ public interface BookRepository {
 
     public int deleteBookImage(int imageId);
 }
-
-
