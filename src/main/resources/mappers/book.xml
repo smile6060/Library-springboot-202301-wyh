@@ -76,6 +76,97 @@
             limit #{index}, #{count}
         </if>
     </select>
+    <select id="userSearchBook" parameterType="com.korit.library.web.dto.SearchBookReqDto" resultType="com.korit.library.entity.BookMst">
+        SELECT
+            bm.book_id as bookId,
+            bm.book_code as bookCode,
+            bm.book_name as bookName,
+            bm.author,
+            bm.publisher,
+            bm.publication_date as publicationDate,
+            bm.category,
+            rd.rentalStatus
+        from
+            book_mst bm
+        left outer join (select
+        rd1.book_id,
+        if(rd2.return_date is null, 'Y', 'N') as rentalStatus
+        from
+        (select
+        max(rental_dtl_id) as rental_dtl_id,
+        book_id
+        from
+        rental_dtl
+        group by
+        book_id) rd1
+        left outer join rental_dtl rd2 on(rd2.rental_dtl_id = rd1.rental_dtl_id)) rd
+        on(rd.book_id = bm.book_id)
+        where
+        1 = 1
+        <if test='searchValue != null and searchValue != ""'>
+            and (
+            bm.book_name like CONCAT('%', #{searchValue}, '%')
+            or	bm.author like CONCAT('%', #{searchValue}, '%')
+            or	bm.publisher like CONCAT('%', #{searchValue}, '%')
+            )
+        </if>
+        <if test='category != null and category != ""'>
+            and	bm.category = #{category}
+        </if>
+
+        order by
+        <choose>
+            <when test='order == "bookName"'>bm.book_name,</when>
+            <when test='order == "author"'>bm.author,</when>
+            <when test='order == "dateAsc"'>bm.publication_date,</when>
+            <when test='order == "dateDesc"'>bm.publication_date desc,</when>
+        </choose>
+        bm.book_id
+        <if test='limit == "Y"'>
+            limit #{index}, #{count}
+        </if>
+        select
+            bm.book_id,
+            bm.book_code,
+            bm.book_name,
+            bm.author,
+            bm.publisher,
+            bm.publication_date,
+            bm.category,
+            bi.save_name,
+            rd.rental_dtl_id,
+            rd.return_date,
+            rm.user_id,
+            bl.like_id,
+            lc.like_count
+
+        from
+            book_mst bm
+            left outer join book_image bi
+                on(bi.book_code = bm.book_code)
+            left outer join rental_dtl rd
+                on(rd.book_id = bm.book_id and rd.return_date is null)
+            left outer join rental_mst rm
+                on(rm.rental_id = rd.rental_id and rm.user_id = #{userId})
+            left outer join (select
+                                book_id,
+                                count(book_id) as like_count
+                            from
+                                book_like
+                            group by
+                                book_id) lc on(lc.book_id = bm.book_id)
+        where
+            (bm.book_name like concat('%', #{searchValue}, '%')
+        or  bm.author like ('%', #{searchValue}, '%')
+        or  bm.publisher like ('%', #{searchValue}, '%')
+        and bm.category in
+        <foreach collection="categories" item="categoryName" open="(" close=")" separator=",">
+            #{categoryName}
+        </foreach>
+
+        limit #{index}, #{count};
+
+    </select>
 
     <select id="findBookByBookCode" resultType="com.korit.library.entity.BookMst">
         SELECT
