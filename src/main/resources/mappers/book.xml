@@ -55,10 +55,10 @@
             1 = 1
         <if test='searchValue != null and searchValue != ""'>
             and (
-                    bm.book_name like CONCAT('%', #{searchValue}, '%')
-                or	bm.author like CONCAT('%', #{searchValue}, '%')
-                or	bm.publisher like CONCAT('%', #{searchValue}, '%')
-                )
+            bm.book_name like CONCAT('%', #{searchValue}, '%')
+            or	bm.author like CONCAT('%', #{searchValue}, '%')
+            or	bm.publisher like CONCAT('%', #{searchValue}, '%')
+            )
         </if>
         <if test='category != null and category != ""'>
             and	bm.category = #{category}
@@ -144,9 +144,9 @@
             book_mst
         where
             book_id in
-            <foreach collection="list" item="bookId" open="(" close=")" separator=",">
-                #{bookId}
-            </foreach>
+        <foreach collection="list" item="bookId" open="(" close=")" separator=",">
+            #{bookId}
+        </foreach>
     </delete>
 
     <insert id="registerBookImages" parameterType="list">
@@ -199,8 +199,8 @@
     <delete id="deleteBookImage">
         delete
         from
-            book_image
+        book_image
         where
-            image_id = #{imageId};
+        image_id = #{imageId};
     </delete>
 </mapper>

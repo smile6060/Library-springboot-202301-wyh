@@ -10,5 +10,4 @@ import java.util.List;
 public interface SearchRepository {
     public int getUserSearchBookTotalCount(SearchBookReqDto searchBookReqDto);
     public List<SearchBook> userSearchBook(SearchBookReqDto searchBookReqDto);
-
 }
