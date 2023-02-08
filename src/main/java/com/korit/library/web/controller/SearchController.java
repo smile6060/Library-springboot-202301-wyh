@@ -12,4 +12,5 @@ public class SearchController {
     public String loadSearch() {
         return "search";
     }
+
 }

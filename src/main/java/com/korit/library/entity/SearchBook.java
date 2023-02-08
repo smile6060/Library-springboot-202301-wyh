@@ -22,5 +22,7 @@ public class SearchBook {
     private int rentalDtlId;
     private LocalDate returnDate;
     private int userId;
+    private int likeId;
+
     private int likeCount;
 }

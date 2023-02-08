@@ -1,13 +1,13 @@
-class principalApi {
+class PrincipalApi {
     static #instance = null;
     static getInstance() {
-        if (this.#instance == null) {
-            this.#instance = new principalApi();
+        if(this.#instance == null) {
+            this.#instance = new PrincipalApi();
         }
         return this.#instance;
     }
 
-    getPrincipal () {
+    getPrincipal() {
         let responseData = null;
 
         $.ajax({
@@ -17,6 +17,7 @@ class principalApi {
             dataType: "json",
             success: response => {
                 responseData = response.data;
+                console.log(responseData);
             },
             error: error => {
                 console.log(error);
