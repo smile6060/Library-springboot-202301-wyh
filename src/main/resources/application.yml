@@ -2,6 +2,16 @@ server:
   port: 8000
 
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 728487953692-lcrpcdi31so6r8c2ddp11r95hi1691vv.apps.googleusercontent.com
+            clientSecret: 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
+            scope:
+              - email
+              - profile
   mvc:
     static-path-pattern: /static/**
     pathmatch:
